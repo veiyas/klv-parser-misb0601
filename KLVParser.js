@@ -1,5 +1,3 @@
-
-
 function logKeyValue(key, valueName, value) {
   console.log(`Key: ${key}, ${valueName}:`, value);
 }
