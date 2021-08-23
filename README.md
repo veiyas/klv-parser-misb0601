@@ -23,7 +23,7 @@ fs.readFile('klv-file.klv', (err, file) => {
 ```
 The API is simple, simply call
 `KLV.parseKLVdata(file, options)`
-where options is a JS object whose parameters (seen above) can be helpful while debugging your application.
+where options is a JS object whose parameters (seen above) can be helpful while debugging your application. The returned object contains the packets and the number of dropped packages from checksum discrepancies.
 
 This package focuses mostly on the geographic values. As a consequence, some fields are not supported, mostly consisting of sets and weird data structures.
 The unsupported fields are:
