@@ -1,4 +1,4 @@
-This package can be used to parse binary data following the [https://www.gwg.nga.mil/misb/docs/standards/ST0601.17.pdf](MISB0601.17 standard).
+This package can be used to parse binary data following the [MISB0601.17 standard](https://www.gwg.nga.mil/misb/docs/standards/ST0601.17.pdf).
 The KLV file is parsed into a handy javascript object for each packet.
 If your KLV data is stored in a mpegts file I recommend using ffmpeg to extract the KLV stream.
 
@@ -9,8 +9,8 @@ const klv = require('klv-parser-misb');
 const fs = require('fs');
 
 // You can also use fs.readFileSync
-fs.readFile('klv-file.klv', (err, buffer) => {
-    let KLVdata = KLV.parseKLVdata(buffer, {
+fs.readFile('klv-file.klv', (err, file) => {
+    let KLVdata = KLV.parseKLVdata(file, {
       removeUndefinedKeys: false,
       logKeyValues: false,
       logErrors: false,
@@ -19,6 +19,7 @@ fs.readFile('klv-file.klv', (err, buffer) => {
     let nDropped = KLVdata.nDropped;
     
     // Do something with the data...
+}
 ```
 The API is simple, simply call
 `KLV.parseKLVdata(file, options)`
