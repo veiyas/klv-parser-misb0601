@@ -1,0 +1,25 @@
+{
+  "name": "klv-parser-misb",
+  "version": "1.0.0",
+  "description": "This package can be used to parse binary data following the MISB0601.17 standard.",
+  "main": "KLVParser.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/veiyas/klv-parser-misb0601.git"
+  },
+  "keywords": [
+    "klv",
+    "misb0601",
+    "parser",
+    "klv-parser"
+  ],
+  "author": "David Robín Karlsson",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/veiyas/klv-parser-misb0601/issues"
+  },
+  "homepage": "https://github.com/veiyas/klv-parser-misb0601#readme"
+}
