@@ -5,7 +5,7 @@ If your KLV data is stored in a mpegts file I recommend using ffmpeg to extract 
 Usage:
 ```javascript
 
-const klv = require('klv-parser-misb');
+const KLV = require('klv-parser-misb');
 const fs = require('fs');
 
 // You can also use fs.readFileSync
@@ -55,7 +55,7 @@ The unsupported fields are:
 * Tag 141: Waypoint List
 * Tag 142: View Domain
 
-If you're in the business of using these fields you're programming is probably advanced enough to implement them yourself. The cases are already defined in the source code, albeit without functionality. If you do implement these I would appreciate a pull request on github :)
+If you're in the business of using these fields your programming is probably advanced enough to implement them yourself. The cases are already defined in the source code, albeit without functionality. If you do implement these I would appreciate a pull request on github :)
 
 Some fields are untested for _real_ _life_ _situations_ as I don't have any data to test them on. If you come across any wrongly parsed values, please raise an issue on github.
 
