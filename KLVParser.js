@@ -1,3 +1,42 @@
+const stream = require('stream')
+
+exports.parseKLVfile = function (binaryData, options = {
+  removeUndefinedKeys: true,
+  logKeyValues: false,
+  logErrors: false,
+}) {
+  return parseKLVdata(binaryData, options);
+}
+
+exports.createParseStream = (options = {
+  removeUndefinedKeys: true,
+  logKeyValues: false,
+  logErrors: false,
+}) => {
+  // Some bookkeeping to make sure we don't clip KLV packets
+  let clippedChunk = undefined;
+  const LDSkey = Buffer.from('060E2B34020B01010E01030101000000', 'hex');
+
+  let parser = new stream.Transform({
+    objectMode: true,
+    transform(chunk, encoding, done) {
+      if (!clippedChunk) { clippedChunk = chunk; }
+      else {
+        let packetBegin = chunk.indexOf(LDSkey);
+        let unclippedChunk = Buffer.concat([clippedChunk, chunk.slice(0, packetBegin)]);
+        this.push(JSON.stringify(parseKLVdata(unclippedChunk, options)));
+        clippedChunk = chunk.slice(packetBegin);
+      }
+      done();
+    },
+    flush(done) {
+      this.push(JSON.stringify(parseKLVdata(clippedChunk, options)));
+      done();
+    }
+  });
+  return parser;
+};
+
 function logKeyValue(key, valueName, value) {
   console.log(`Key: ${key}, ${valueName}:`, value);
 }
@@ -23,11 +62,8 @@ const two8limit = (2 ** 8) - 1;
 const two16limit = (2 ** 16) - 1;
 const two32limit = (2 ** 32) - 1;
 
-exports.parseKLVdata = function (buffer, options = {
-  removeUndefinedKeys: true,
-  logKeyValues: false,
-  logErrors: false,
-}) {
+function parseKLVdata(buffer, options) {
+  console.log('options', options);
   const LDSkey = Buffer.from('060E2B34020B01010E01030101000000', 'hex');
   let KLVpackets = Array();
   var nDroppedPackets = 0;
@@ -57,7 +93,7 @@ exports.parseKLVdata = function (buffer, options = {
     KLVpackets.forEach(packet => Object.keys(packet).forEach(key => packet[key] === undefined && delete packet[key]));
   }
   return { packets: KLVpackets, nDropped: nDroppedPackets };
-}
+};
 
 function parsePacket(buffer, bufferPtr, packetBegin, payloadSize, options) {
   let packet = {};

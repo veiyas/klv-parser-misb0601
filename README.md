@@ -1,29 +1,33 @@
 This package can be used to parse binary data following the [MISB0601.17 standard](https://www.gwg.nga.mil/misb/docs/standards/ST0601.17.pdf).
-The KLV file is parsed into a handy javascript object for each packet.
-If your KLV data is stored in a mpegts file I recommend using ffmpeg to extract the KLV stream.
-
 Usage:
 ```javascript
-
 const KLV = require('klv-parser-misb');
 const fs = require('fs');
 
-// You can also use fs.readFileSync
+// Configs useful for debugging
+const options = {
+  removeUndefinedKeys: true,
+  logKeyValues: false,
+  logErrors: false,
+}
+
+// Parse a whole file
 fs.readFile('klv-file.klv', (err, file) => {
-    let KLVdata = KLV.parseKLVdata(file, {
-      removeUndefinedKeys: false,
-      logKeyValues: false,
-      logErrors: false,
-    })
+    let KLVdata = KLV.parseKLVfile(file, options);
     let packets = KLVdata.packets;
     let nDropped = KLVdata.nDropped;
     
     // Do something with the data...
 }
+
+// Or use streams
+let filestream = fs.createReadStream('klv-file.klv');
+let parseStream = KLV.createParseStream(options);
+filestream.pipe(parseStream);
+parseStream.pipe(/* Somewhere else */);
+
 ```
-The API is simple, simply call
-`KLV.parseKLVdata(file, options)`
-where options is a JS object whose parameters (seen above) can be helpful while debugging your application. The returned object contains the packets and the number of dropped packages from checksum discrepancies.
+You can either use `KLV.parseKLVfile` to parse a binary file or `KLV.createParseStream` to setup a streaming chain. The binary KLV file's packets are parsed into easily manageable JS objects.
 
 This package focuses mostly on the geographic values. As a consequence, some fields are not supported, mostly consisting of sets and weird data structures.
 The unsupported fields are:
@@ -57,6 +61,4 @@ The unsupported fields are:
 
 If you're in the business of using these fields your programming is probably advanced enough to implement them yourself. The cases are already defined in the source code, albeit without functionality. If you do implement these I would appreciate a pull request on github :)
 
-Some fields are untested for _real_ _life_ _situations_ as I don't have any data to test them on. If you come across any wrongly parsed values, please raise an issue on github.
-
-TODO: Support file streams.
+Some fields are untested for _real_ _life_ _situations_ as I don't have any data to test them on. If you come across any wrongly parsed values, please raise an issue or create a pull request on github.
