@@ -63,7 +63,6 @@ const two16limit = (2 ** 16) - 1;
 const two32limit = (2 ** 32) - 1;
 
 function parseKLVdata(buffer, options) {
-  console.log('options', options);
   const LDSkey = Buffer.from('060E2B34020B01010E01030101000000', 'hex');
   let KLVpackets = Array();
   var nDroppedPackets = 0;
