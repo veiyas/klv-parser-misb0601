@@ -185,11 +185,11 @@ function parsePacket(buffer, bufferPtr, packetBegin, payloadSize, options) {
         LDSname = 'Sensor True Altitude';
         break;
       case 16:
-        packet.sensorHorizontalFOV = LDSvalue = (180 / two32limit) * buffer.readUInt16BE(bufferPtr);
+        packet.sensorHorizontalFOV = LDSvalue = (180 / two16limit) * buffer.readUInt16BE(bufferPtr);
         LDSname = 'Sensor Horizontal FOV';
         break;
       case 17:
-        packet.sensorVerticalFOV = LDSvalue = (180 / two32limit) * buffer.readUInt16BE(bufferPtr);
+        packet.sensorVerticalFOV = LDSvalue = (180 / two16limit) * buffer.readUInt16BE(bufferPtr);
         LDSname = 'Sensor Vertical FOV';
         break;
       case 18:
