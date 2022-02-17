@@ -1,6 +1,6 @@
 {
   "name": "klv-parser-misb",
-  "version": "2.0.3",
+  "version": "2.0.4",
   "description": "This package can be used to parse binary data following the MISB0601.17 standard.",
   "main": "KLVParser.js",
   "scripts": {
