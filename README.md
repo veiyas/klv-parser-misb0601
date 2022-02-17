@@ -1,4 +1,4 @@
-[![Buymeacoffee](https://badgen.net/badge/icon/buymeacoffee?icon=buymeacoffee&label)](https://https://www.buymeacoffee.com/veiyas)
+[![Buymeacoffee](https://badgen.net/badge/icon/buymeacoffee?icon=buymeacoffee&label)](https://www.buymeacoffee.com/veiyas)
 
 This package can be used to parse binary data following the [MISB0601.17 standard](https://www.gwg.nga.mil/misb/docs/standards/ST0601.17.pdf).
 Usage:
