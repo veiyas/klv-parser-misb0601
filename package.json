@@ -4,7 +4,7 @@
   "description": "This package can be used to parse binary data following the MISB0601.17 standard.",
   "main": "KLVParser.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node test/test.js"
   },
   "repository": {
     "type": "git",

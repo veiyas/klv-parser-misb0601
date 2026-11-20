@@ -77,7 +77,7 @@ function parseKLVdata(buffer, options) {
 
     let payloadSize = -1;
     if (firstBERByte >> 7) { // Long form BER
-      let BERlength = firstBERByte & 0x10F447; // Clear msb (leftmost) bit in 1 byte int
+      let BERlength = firstBERByte & 0x7F; // Clear msb (leftmost) bit in 1 byte int
 
       payloadSize = parseLongFormBER(bufferPtr, BERlength, buffer);
       bufferPtr += 1 + BERlength;
@@ -107,9 +107,20 @@ function parsePacket(buffer, bufferPtr, packetBegin, payloadSize, options) {
   let checksumReached = false;
 
   while (!checksumReached && bufferPtr - packetBegin < payloadSize + 16) {
-    let tag = buffer.readUInt8(bufferPtr);
-    let length = buffer.readUInt8(bufferPtr + 1);
-    bufferPtr += 2; // Move ptr past key and length fields
+    // Tags are BER-OID: tags 128 and up take two bytes (0x81 0x00 is tag 128)
+    let tag = 0;
+    let tagByte;
+    do {
+      tagByte = buffer.readUInt8(bufferPtr++);
+      tag = tag * 128 + (tagByte & 0x7F);
+    } while (tagByte & 0x80);
+    // Item lengths are BER: short form below 128, long form 0x8N followed by N bytes
+    let length = buffer.readUInt8(bufferPtr++);
+    if (length & 0x80) {
+      const nBytes = length & 0x7F;
+      length = buffer.readUIntBE(bufferPtr, nBytes);
+      bufferPtr += nBytes;
+    }
 
     var LDSvalue = undefined;
     var LDSname = '';
@@ -130,11 +141,12 @@ function parsePacket(buffer, bufferPtr, packetBegin, payloadSize, options) {
         let packetLen = bufferPtr - packetBegin;
         let bcc = 0;
         for (let i = packetBegin; i < packetBegin + packetLen; i++) {
-          bcc += buffer[i] << (8 * ((i + 1) % 2));
+          bcc += buffer[i] << (8 * ((i - packetBegin + 1) % 2)); // parity counts from the start of the packet
         }
         bufferPtr += length;
         if ((bcc & 0xFFFF) === packet.checksum) { return packet; }
-        else { return packet; }
+        if (options.logErrors) { console.log(`Checksum mismatch: packet says ${packet.checksum}, bytes sum to ${bcc & 0xFFFF}, dropping packet`); }
+        return undefined; // Corrupt packet
       case 2:
         let bigTimestamp = buffer.readBigUInt64BE(bufferPtr);
         packet.timestamp = LDSvalue = parseInt(bigTimestamp);
